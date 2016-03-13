@@ -43,5 +43,6 @@ def standardize(df):
     """
     return (df - df.mean()) / df.std()
 
-def top_k_indices(series, k):
-    return np.argsort(series)[::-1][0:k]
+def zero_cross_rate(series):
+    zero_cross_count = (np.diff(np.sign(series)) != 0).sum()
+    return zero_cross_count / len(series)

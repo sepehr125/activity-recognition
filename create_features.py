@@ -7,7 +7,7 @@ import os
 import pickle
 from collections import defaultdict
 import argparse
-from helpers import window_df, standardize, top_k_indices
+from helpers import window_df, standardize, zero_cross_rate
 from settings import SAMPLING_RATE, CSV_FILES, VALID_TARGETS, \
                         DATA_COLS, TARGET_COL, COLS
 
@@ -71,20 +71,24 @@ if __name__ == '__main__':
         samples = window_df(df, args.n_seconds*SAMPLING_RATE, args.pct_overlap)
         for sample in samples:
             
-            # kurtoses = kurtosis(sample[DATA_COLS])
-            # grp['x_kurtosis'].append(kurtoses['x_accel'])
-            # grp['y_kurtosis'].append(kurtoses['y_accel'])
-            # grp['z_kurtosis'].append(kurtoses['z_accel'])
+            grp['x_zcr'].append(zero_cross_rate(sample['x_accel']))
+            grp['y_zcr'].append(zero_cross_rate(sample['y_accel']))
+            grp['z_zcr'].append(zero_cross_rate(sample['z_accel']))
+
+            kurtoses = kurtosis(sample[DATA_COLS])
+            grp['x_kurtosis'].append(kurtoses[0])
+            grp['y_kurtosis'].append(kurtoses[1])
+            grp['z_kurtosis'].append(kurtoses[2])
 
             means = sample[DATA_COLS].mean()
-            grp['x_accel_mean'].append(means['x_accel'])
-            grp['y_accel_mean'].append(means['y_accel'])
-            grp['z_accel_mean'].append(means['z_accel'])
+            grp['x_mean'].append(means['x_accel'])
+            grp['y_mean'].append(means['y_accel'])
+            grp['z_mean'].append(means['z_accel'])
             
             stds = sample[DATA_COLS].std()
-            grp['x_accel_std'].append(stds['x_accel'])
-            grp['y_accel_std'].append(stds['y_accel'])
-            grp['z_accel_std'].append(stds['z_accel'])
+            grp['x_std'].append(stds['x_accel'])
+            grp['y_std'].append(stds['y_accel'])
+            grp['z_std'].append(stds['z_accel'])
             
             grp['x_max_min'].append(max(sample["x_accel"]) - min(sample["x_accel"]))
             grp['y_max_min'].append(max(sample["y_accel"]) - min(sample["y_accel"]))
@@ -102,51 +106,28 @@ if __name__ == '__main__':
             grp['rms_std'].append(rms.std())
 
             # fourier transforms!
-            # x_fft = abs(np.fft.rfft(sample['x_accel']))
-            # y_fft = abs(np.fft.rfft(sample['y_accel']))
-            # z_fft = abs(np.fft.rfft(sample['z_accel']))
-            freqs = np.fft.rfftfreq(len(sample), 1./SAMPLING_RATE) # x-axis vals in Hz
-
-            # filter out frequencies
-            min_freq = 1. # very low frequencies tend to blow up amplitudes
-            # take top frequencies
-            k = 5
-            for dim in DATA_COLS:
-                fourier = abs(np.fft.rfft(sample[dim]))
-                # ignore nonesense frequencies
-                valid_fouriers = fourier[freqs > min_freq]
-                valid_freqs = freqs[freqs > min_freq]
-
-                peaks = top_k_indices(valid_fouriers, k)
-                for kth, peak in enumerate(peaks):
-                    fft_col = "%s_fft_top_%d"%(dim,kth)
-                    grp[fft_col].append(valid_freqs[peak])
-
-                mean_col = "%s_fft_mean"%dim
-                grp[mean_col].append(fourier.mean())
-
-                std_col = "%s_fft_std"%dim
-                grp[std_col].append(fourier.std())
+            x_fft = abs(np.fft.rfft(sample['x_accel']))
+            y_fft = abs(np.fft.rfft(sample['y_accel']))
+            z_fft = abs(np.fft.rfft(sample['z_accel']))
 
             # Max Fourier 
-            # grp['x_fft_max'].append(x_fft.max())
-            # grp['y_fft_max'].append(y_fft.max())
-            # grp['z_fft_max'].append(z_fft.max())
-
-            # # Min Fourier
-            # grp['x_fft_min'].append(x_fft.min())
-            # grp['y_fft_min'].append(y_fft.min())
-            # grp['z_fft_min'].append(z_fft.min())
+            grp['x_fft_max'].append(x_fft.max())
+            grp['y_fft_max'].append(y_fft.max())
+            grp['z_fft_max'].append(z_fft.max())
             
             # Mean Fourier
-            # grp['x_fft_mean'].append(x_fft.mean())
-            # grp['y_fft_mean'].append(y_fft.mean())
-            # grp['z_fft_mean'].append(z_fft.mean())
+            grp['x_fft_mean'].append(x_fft.mean())
+            grp['y_fft_mean'].append(y_fft.mean())
+            grp['z_fft_mean'].append(z_fft.mean())
 
-            # # Standard deviation Fourier
-            # grp['x_fft_std'].append(x_fft.std())
-            # grp['y_fft_std'].append(y_fft.std())
-            # grp['z_fft_std'].append(z_fft.std())
+            # Standard deviation Fourier
+            grp['x_fft_std'].append(x_fft.std())
+            grp['y_fft_std'].append(y_fft.std())
+            grp['z_fft_std'].append(z_fft.std())
+
+            grp['x_fft_kurtosis'].append(kurtosis(x_fft))
+            grp['y_fft_kurtosis'].append(kurtosis(y_fft))
+            grp['z_fft_kurtosis'].append(kurtosis(z_fft))
 
         # Add grp to feature_matrix
         feature_matrix.append(pd.DataFrame(grp))
