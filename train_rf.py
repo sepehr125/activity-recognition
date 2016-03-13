@@ -6,6 +6,7 @@ from sklearn.cross_validation import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
 import pickle
+from settings import VALID_TARGETS, DATA_COLS, TARGET_COL
 
 
 """
@@ -32,8 +33,6 @@ if __name__ == '__main__':
                         'output_file',
                         help="Path or name of file to save model as.")
 
-    #TODO: pass in test_size and number of estimators
-
     args = parser.parse_args()
 
     #-----------------------------
@@ -41,37 +40,38 @@ if __name__ == '__main__':
     # load feature matrix as dataframe:
     df = pickle.load(open(args.feature_matrix, 'rb'))
 
-    if 'target' not in df.columns:
-        raise KeyError("Target column not found. Nothing to predict")
-
-    X = df.drop('target', axis=1)
-    y = df['target']
+    X = df.drop(TARGET_COL, axis=1)
+    y = df[TARGET_COL[0]]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     model = RandomForestClassifier(
-        class_weight='subsample', 
+        class_weight='subsample', # takes care of unbalanced classes
         n_estimators=200)
-    
-    # model = GradientBoostingClassifier() # generally performs worse
 
     model.fit(X_train, y_train)
     
     # Print overall accuracy
     test_score = model.score(X_test, y_test)
-    print("Test score: %f"%test_score)
-    
+    print("Score on test set: %f"%test_score)
+
+    # compare accuracy to baseline
+    print("vs. %f if randomly picked"%(1./len(VALID_TARGETS)))
+    popular = max([len(grp) for _, grp in df.groupby('target')]) / len(df)
+    print("vs. %f if picked most popular"%popular)
+
     # Print detailed confusion matrix
     y_pred = model.predict(X_test)
     conf_mat = confusion_matrix(y_test, y_pred)
     print("Confusion Matrix:")
     print(conf_mat)
 
-    # Print features in order of importance by tree model 
+    # Print features in order of importance 
     features = zip(model.feature_importances_, X.columns)
     features_sorted = sorted(features, key=lambda t: t[0])
     for importance, feature in features_sorted[::-1]:
         print("%f : %s"%(importance, feature))
+
 
     # save the model
     with open(args.output_file, 'wb') as f:
