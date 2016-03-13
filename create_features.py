@@ -2,6 +2,7 @@
 
 import pandas as pd
 import numpy as np
+from scipy.stats import kurtosis
 import os
 import pickle
 from collections import defaultdict
