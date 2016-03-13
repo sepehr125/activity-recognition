@@ -43,11 +43,5 @@ def standardize(df):
     """
     return (df - df.mean()) / df.std()
 
-
-def amplitudes( series ):
-    """
-    Calculate amplitudes of frequency domain
-    """
-    complex_fourier = np.fft.rfft( series )
-    return np.absolute(complex_fourier)
-
+def top_k_indices(series, k):
+    return np.argsort(series)[::-1][0:k]

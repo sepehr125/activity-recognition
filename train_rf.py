@@ -4,22 +4,18 @@ import argparse
 import pandas as pd
 from sklearn.cross_validation import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-# from sklearn.ensemble import GradientBoostingClassifier # generally performs worse
 from sklearn.metrics import confusion_matrix
-
 import pickle
 
 
 """
 This script:
-1. Loads given, pickled dataframe. 
-2. Looks for "target" column
-3. Uses all other columns to predict target with random forest
-4. Saves model
+1. Loads given pickled dataframe. 
+2. Uses all other columns to predict "target" column with random forest
+3. Saves model
 """
 
 if __name__ == '__main__':
-
 
     parser = argparse.ArgumentParser(
                         description=
@@ -53,10 +49,9 @@ if __name__ == '__main__':
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-
     model = RandomForestClassifier(
         class_weight='subsample', 
-        n_estimators=100)
+        n_estimators=200)
     
     # model = GradientBoostingClassifier() # generally performs worse
 
