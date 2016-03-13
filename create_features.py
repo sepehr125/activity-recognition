@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     parser.add_argument(
                         'output_file',
-                        default="feature_matrix.pkl"
+                        default="feature_matrix.pkl",
                         help="Path or name of file to pickle results.")
     args = parser.parse_args()
 
@@ -60,6 +60,8 @@ if __name__ == '__main__':
         # 0-center the mean and normalize. this adds about 5 points
         df[DATA_COLS] = standardize(df[DATA_COLS])
         
+        print("Processing %d rows for target #%d..."%(len(df), target))
+
         new_group = defaultdict(list)
         new_group['target'] = target
         samples = window_df(df, args.n_seconds*SAMPLING_RATE, args.pct_overlap)
@@ -119,7 +121,6 @@ if __name__ == '__main__':
 
         # Add new_group to feature_matrix
         feature_matrix.append(pd.DataFrame(new_group))
-        print("Finished target #%d"%target)
 
     # concatenate all groups into one dataframe
     feature_matrix_df = pd.concat(feature_matrix)

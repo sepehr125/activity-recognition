@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-
 import os
 
 """
-Define Metadata variables, paths, etc. to be used
-between files
+Define metadata and paths to be used between files
 """
-SAMPLING_RATE = 52 # Data was recorded at 52HZ. 
+
+SAMPLING_RATE = 52 # Data was recorded at 52Hz. 
 
 # File names and locations
-DATA_DIR = os.path.join(os.getcwd(), 'data/raw')
+DATA_DIR = os.path.join(os.getcwd(), 'data')
 CSV_FILES = [os.path.join(DATA_DIR, f) for f 
         in os.listdir(DATA_DIR) 
         if f.endswith('.csv')]
@@ -28,4 +27,4 @@ TARGET_DEFS = {
     6: "Walking and Talking with Someone",
     7: "Talking while Standing",        
 }
-VALID_TARGETS = list(TARGET_LABELS.keys()) # i.e: 1-7
+VALID_TARGETS = list(TARGET_DEFS.keys()) # i.e: 1-7
