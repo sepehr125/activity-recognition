@@ -109,14 +109,13 @@ if __name__ == '__main__':
             grp['z_kurtosis'].append(kurtoses[2])
 
             # fourier transforms!
-            x_fft = abs(np.fft.rfft(sample['x_accel']))[10::] # drop very small freqs
-            y_fft = abs(np.fft.rfft(sample['y_accel']))[10::]
-            z_fft = abs(np.fft.rfft(sample['z_accel']))[10::]
+            x_fft = abs(np.fft.rfft(sample['x_accel']))
+            y_fft = abs(np.fft.rfft(sample['y_accel']))
+            z_fft = abs(np.fft.rfft(sample['z_accel']))
 
-            # I've used fft.rfftfreq(sample.size, 1./SAMPLING_RATE) 
-            # and argmax to find the frequencies corresponding to max
-            # amplitude, but somehow the amplitudes themselves work better.
-
+            grp['x_freq_max'].append(np.argmax(x_fft))
+            grp['y_freq_max'].append(np.argmax(y_fft))
+            grp['z_freq_max'].append(np.argmax(z_fft))
 
             # Max Fourier 
             grp['x_fft_max'].append(x_fft.max())

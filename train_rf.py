@@ -43,7 +43,7 @@ if __name__ == '__main__':
     X = df.drop(TARGET_COL, axis=1)
     y = df[TARGET_COL[0]]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
 
     model = RandomForestClassifier(
         class_weight='subsample', # takes care of unbalanced classes
