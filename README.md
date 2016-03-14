@@ -1,4 +1,4 @@
-## Activity recognition from wearable accelerometer
+## Recognizing human activity from wearable accelerometers
 [Dataset from UCI](http://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer)   
 
 Signal from accelerometers is used to predict the wearer's activity among 7 classes:  
