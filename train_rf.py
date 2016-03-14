@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     model = RandomForestClassifier(
         class_weight='subsample', # takes care of unbalanced classes
-        n_estimators=200)
+        n_estimators=500)
 
     model.fit(X_train, y_train)
     
@@ -55,8 +55,11 @@ if __name__ == '__main__':
     test_score = model.score(X_test, y_test)
     print("Score on test set: %f"%test_score)
 
-    # compare accuracy to baseline
+    # compare accuracy to baselines:
+    # Baseline 1: a random classifier:
     print("vs. %f if randomly picked"%(1./len(VALID_TARGETS)))
+
+    # Baseline 2: the "average" classifier:
     popular = max([len(grp) for _, grp in df.groupby('target')]) / len(df)
     print("vs. %f if picked most popular"%popular)
 

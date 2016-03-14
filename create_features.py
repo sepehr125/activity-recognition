@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pandas as pd
 import numpy as np
 from scipy.stats import kurtosis
@@ -7,7 +6,7 @@ import os
 import pickle
 from collections import defaultdict
 import argparse
-from helpers import window_df, standardize, zero_cross_rate
+from helpers import window_df, standardize, zero_cross_rate, top_k_indices
 from settings import SAMPLING_RATE, CSV_FILES, VALID_TARGETS, \
                         DATA_COLS, TARGET_COL, COLS
 
@@ -61,25 +60,18 @@ if __name__ == '__main__':
     # consider windows with more than one target
     for target, df in master_valid.groupby('target'):
         
-        # 0-center the mean and normalize. this adds about 5 points
+        # 0-center the mean and normalize
         df[DATA_COLS] = standardize(df[DATA_COLS])
         
         print("Processing %d rows for target #%d..."%(len(df), target))
 
         grp = defaultdict(list)
         grp['target'] = target
-        samples = window_df(df, args.n_seconds*SAMPLING_RATE, args.pct_overlap)
+        samples = window_df(df, 
+                            width=args.n_seconds*SAMPLING_RATE, 
+                            overlap=args.pct_overlap)
         for sample in samples:
             
-            grp['x_zcr'].append(zero_cross_rate(sample['x_accel']))
-            grp['y_zcr'].append(zero_cross_rate(sample['y_accel']))
-            grp['z_zcr'].append(zero_cross_rate(sample['z_accel']))
-
-            kurtoses = kurtosis(sample[DATA_COLS])
-            grp['x_kurtosis'].append(kurtoses[0])
-            grp['y_kurtosis'].append(kurtoses[1])
-            grp['z_kurtosis'].append(kurtoses[2])
-
             means = sample[DATA_COLS].mean()
             grp['x_mean'].append(means['x_accel'])
             grp['y_mean'].append(means['y_accel'])
@@ -105,10 +97,26 @@ if __name__ == '__main__':
             grp['rms_mean'].append(rms.mean())
             grp['rms_std'].append(rms.std())
 
+            # zero crossing rate of amplitude (crossing below mean)
+            grp['x_zcr'].append(zero_cross_rate(sample['x_accel']))
+            grp['y_zcr'].append(zero_cross_rate(sample['y_accel']))
+            grp['z_zcr'].append(zero_cross_rate(sample['z_accel']))
+
+            # amplitude kurtosis
+            kurtoses = kurtosis(sample[DATA_COLS])
+            grp['x_kurtosis'].append(kurtoses[0])
+            grp['y_kurtosis'].append(kurtoses[1])
+            grp['z_kurtosis'].append(kurtoses[2])
+
             # fourier transforms!
-            x_fft = abs(np.fft.rfft(sample['x_accel']))
-            y_fft = abs(np.fft.rfft(sample['y_accel']))
-            z_fft = abs(np.fft.rfft(sample['z_accel']))
+            x_fft = abs(np.fft.rfft(sample['x_accel']))[10::] # drop very small freqs
+            y_fft = abs(np.fft.rfft(sample['y_accel']))[10::]
+            z_fft = abs(np.fft.rfft(sample['z_accel']))[10::]
+
+            # I've used fft.rfftfreq(sample.size, 1./SAMPLING_RATE) 
+            # and argmax to find the frequencies corresponding to max
+            # amplitude, but somehow the amplitudes themselves work better.
+
 
             # Max Fourier 
             grp['x_fft_max'].append(x_fft.max())
