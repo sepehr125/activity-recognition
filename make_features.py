@@ -25,25 +25,15 @@ if __name__ == '__main__':
                         'Window over data to compute \
                         aggregate features. Save results')
 
-    # Window width = n_seconds * SAMPLING_RATE
-    parser.add_argument(
-                        'n_seconds',
-                        help="Window duration",
-                        default=5, type=int)
-
-    # Windows move forward in increments of pct_overlap * window width
-    parser.add_argument(
-                        'pct_overlap', 
-                        help="[0,1) Proportion of window width \
-                            that should overlap in consecutive samples.",
-                        default=0.5, type=float)
-
     parser.add_argument(
                         'output_file',
                         default="feature_matrix.pkl",
                         help="Path or name of file to pickle results.")
+    
     args = parser.parse_args()
 
+    N_SECONDS = 5
+    OVERLAP = 0.5
 
     # usecols param lets us read in specific columns only. 
     # Ignore index column because we re-index to ensure integrity.
@@ -68,8 +58,8 @@ if __name__ == '__main__':
         grp = defaultdict(list)
         grp['target'] = target
         samples = window_df(df, 
-                            width=args.n_seconds*SAMPLING_RATE, 
-                            overlap=args.pct_overlap)
+                            width=N_SECONDS*SAMPLING_RATE, 
+                            overlap=OVERLAP)
         for sample in samples:
             
             means = sample[DATA_COLS].mean()

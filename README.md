@@ -11,12 +11,16 @@ Signal from accelerometers is used to predict the wearer's activity among 7 clas
 0. "Walking and Talking with Someone"
 0. "Talking while Standing"        
 
-Test set accuracy is around 93% with 35 features, up from ~70% when trained on raw data.
-
-You can train your own random forest model. Simply run:  
-`python train_rf.py features.pkl model_name.pkl`  
+Test error is around **7%** with 35 features, down from ~30% when trained on raw data.
 
 You can tweak features in `featurize.py` and generate your own feature set.  
-`python featurize.py 5 0.5 outputfile.pkl`  
-This will window over the raw data in 5 second intervals with 0.5 overlap of windows (i.e. 2.5s),
-generate features (e.g. Fourier transform peaks, etc.), and save them as `outputfile.pkl`.
+`python make_features.py my_features`  
+
+Then train a model with:  
+`python train_model.py my_features my_model`  
+
+features.pkl is included to model with immediately.
+
+Questions? Reach out to me at:
+[sepehr125@gmail.com](mailto:sepehr125@gmail.com)
+[@sepehr125](htpps://twitter.com/sepehr125)
