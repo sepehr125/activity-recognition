@@ -23,4 +23,4 @@ features.pkl is included to model with immediately.
 
 Questions? Reach out to me at:
 [sepehr125@gmail.com](mailto:sepehr125@gmail.com)
-[@sepehr125](htpps://twitter.com/sepehr125)
+[@sepehr125](https://twitter.com/sepehr125)
