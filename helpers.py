@@ -44,6 +44,7 @@ def standardize(df):
     return (df - df.mean()) / df.std()
 
 def zero_cross_rate(series):
+<<<<<<< HEAD
     """
     How often the signal changes sign (+/-)
     """
@@ -53,3 +54,7 @@ def zero_cross_rate(series):
 
 def top_k_indices(series, k):
     return np.argsort(series)[::-1][0:k]
+=======
+    zero_cross_count = (np.diff(np.sign(series)) != 0).sum()
+    return zero_cross_count / len(series)
+>>>>>>> 97e98fbbdee8d0177643b069bcee86a5fd5021e9

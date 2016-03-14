@@ -42,12 +42,21 @@ if __name__ == '__main__':
 
     X = df.drop(TARGET_COL, axis=1)
     y = df[TARGET_COL[0]]
+<<<<<<< HEAD
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
 
     model = RandomForestClassifier(
         class_weight='subsample', # takes care of unbalanced classes
         n_estimators=500)
+=======
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    model = RandomForestClassifier(
+        class_weight='subsample', # takes care of unbalanced classes
+        n_estimators=200)
+>>>>>>> 97e98fbbdee8d0177643b069bcee86a5fd5021e9
 
     model.fit(X_train, y_train)
     
@@ -55,11 +64,16 @@ if __name__ == '__main__':
     test_score = model.score(X_test, y_test)
     print("Score on test set: %f"%test_score)
 
+<<<<<<< HEAD
     # compare accuracy to baselines:
     # Baseline 1: a random classifier:
     print("vs. %f if randomly picked"%(1./len(VALID_TARGETS)))
 
     # Baseline 2: the "average" classifier:
+=======
+    # compare accuracy to baseline
+    print("vs. %f if randomly picked"%(1./len(VALID_TARGETS)))
+>>>>>>> 97e98fbbdee8d0177643b069bcee86a5fd5021e9
     popular = max([len(grp) for _, grp in df.groupby('target')]) / len(df)
     print("vs. %f if picked most popular"%popular)
 
