@@ -6,7 +6,7 @@ import os
 import pickle
 from collections import defaultdict
 import argparse
-from helpers import window_df, standardize, zero_cross_rate, top_k_indices
+from helpers import window_df, standardize, zero_cross_rate
 from settings import SAMPLING_RATE, CSV_FILES, VALID_TARGETS, \
                         DATA_COLS, TARGET_COL, COLS
 
