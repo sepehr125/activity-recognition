@@ -16,7 +16,7 @@ Test error is around **7%** with 35 features, down from ~30% when trained on raw
 You can tweak features in `featurize.py` and generate your own feature set.  
 `python make_features.py my_features`  
 
-Then train a model with:  
+Then train a model (random forest) with:  
 `python train_model.py my_features my_model`  
 You'll get a nice confusion matrix and some stats about the model.  
 
