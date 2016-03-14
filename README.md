@@ -18,9 +18,10 @@ You can tweak features in `featurize.py` and generate your own feature set.
 
 Then train a model with:  
 `python train_model.py my_features my_model`  
+You'll get a nice confusion matrix and some stats about the model.  
 
-features.pkl is included to model with immediately.
+`features.pkl` is included to model with immediately.
 
-Questions? Reach out to me at:
-[sepehr125@gmail.com](mailto:sepehr125@gmail.com)
-[@sepehr125](https://twitter.com/sepehr125)
+Feel free to get in touch!   
+- [sepehr125@gmail.com](mailto:sepehr125@gmail.com)
+- [@sepehr125](https://twitter.com/sepehr125)
